@@ -22,11 +22,11 @@ define ['board', 'jquery'], (Board, $) ->
             me = @
             $(@board.svg).on "click", (e) ->
                 # Calculate coords in viewbox coordinate system
-                console.log "omg click! " + me.coordsToTile(e.clientX, e.clientY)
+                me.click(e.clientX, e.clientY)
                 me.render()
 
-        # Returns the nearest square given an absolute coordinate location
-        coordsToTile: (x, y) ->
+        # Handles clicks on the board
+        click: (x, y) ->
             # Calculate coords in real pixels within the board
             realX = x - @board.svg.getBoundingClientRect().left
             realY = y - @board.svg.getBoundingClientRect().top
@@ -36,9 +36,9 @@ define ['board', 'jquery'], (Board, $) ->
             gameY = @board.viewboxY * realY / @board.svg.getBoundingClientRect().height
 
             # Calculate the clicked row and column
-            tileX = Math.round @board.tilesX * gameX / @board.viewboxX
-            tileY = Math.round @board.tilesY * gameY / @board.viewboxY
+            tileX = Math.floor @board.tilesX * gameX / @board.viewboxX
+            tileY = Math.floor @board.tilesY * gameY / @board.viewboxY
 
-            @board.board[tileX][tileY].revealed = true
+            @board.reveal(tileX, tileY)
 
             return tileY + ", " + tileX

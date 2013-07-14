@@ -63,7 +63,12 @@ define ['tile', 'jquery'], (Tile, $) ->
                     @board[xRand][yRand] = @board[x][y]
                     @board[x][y] = tileTmp
 
-            # Calculate the adjacents TODO
+            # Calculate the adjacents
+            for row, x in @board
+                for column, y in @board
+                    # Don't need to calculate adjacents for mines
+                    if !@board[x][y].mine
+                        @board[x][y].adjacent = @getAdjacents(x, y)
 
         render: () ->
             # Calculate the dimensions of the tiles
@@ -118,7 +123,76 @@ define ['tile', 'jquery'], (Tile, $) ->
                     @svg.appendChild(@board[x][y].render(posX, posY, (tileLegX / 2), (tileLegX / 2)))
 
             # Clear the parent and insert this into the dom
-            console.log "render, go!"
             $(@selParent).html("")
             $(@selParent).append(@svg)
+
+        # Reveal the given tile
+        # If zero adjacents, reveal all adjacent zeroes as well
+        reveal: (x, y) ->
+            # If it's not already revealed...
+            if !@board[x][y].revealed and !@board[x][y].mine
+                @board[x][y].revealed = true
+
+                # Reveal it and recursively reveal neighbors
+                if @board[x][y].adjacent == 0
+                    coords = @getAdjacentCoords(x, y)
+                    for coord in coords
+                        @reveal(coord.x, coord.y)
+
+        # Reveals the entire board (like when the game is over)
+        revealAll: () ->
+            for row, x in @board
+                for column, y in @board
+                    if !@board[x][y].revealed
+                        @board[x][y].revealed = true
+
+        # Returns the number of adjacent mines for the given square
+        getAdjacents: (x, y) ->
+            adjacent = 0
+
+            coords = @getAdjacentCoords(x, y)
+            for coord in coords
+                adjacent++ if @isMine(coord.x, coord.y)
+
+            return adjacent
+
+        # Return an object for each valid adjacent tile
+        getAdjacentCoords: (x, y) ->
+            coords = []
+
+            # Northwest
+            coords.push {x: x-1, y: y-1} if @isValidPos(x-1, y-1)
+            # North
+            coords.push {x: x, y: y-1} if @isValidPos(x, y-1)
+            # Northeast
+            coords.push {x: x+1, y: y-1} if @isValidPos(x+1, y-1)
+            # West
+            coords.push {x: x-1, y: y} if @isValidPos(x-1, y)
+            # East
+            coords.push {x: x+1, y: y} if @isValidPos(x+1, y)
+            # Southwest
+            coords.push {x: x-1, y: y+1} if @isValidPos(x-1, y+1)
+            # South
+            coords.push {x: x, y: y+1} if @isValidPos(x, y+1)
+            # Southeast
+            coords.push {x: x+1, y: y+1} if @isValidPos(x+1, y+1)
+
+            return coords
+
+        # Returns true if tile lies on the board, false if invalid
+        isValidPos: (x, y) ->
+            if (x < 0) or (x >= @tilesX) or (y < 0) or (y >= @tilesY)
+                return false
+            else
+                return true
+
+        # Returns true if the specified tile contains a mine, false otherwise
+        # Out-of-bounds indices ok, returns false
+        isMine: (x, y) ->
+            # Check for out of bounds
+            if !@isValidPos(x, y)
+                return false
+
+            if @board[x][y].mine
+                return true
 
