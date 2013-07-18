@@ -2,11 +2,7 @@
    global define
 ###
 
-###
-    The game board.
-    The board exists as a 2d array represented like a cartesian plane
-###
-
+# The game board
 define ['tile', 'jquery'], (Tile, $) ->
     "use strict"
 
@@ -16,7 +12,7 @@ define ['tile', 'jquery'], (Tile, $) ->
         svg: null
 
         # The selector for this object's parent
-        selParent: "body"
+        selParent: "#board"
 
         # Viewbox dimensions
         viewboxX: 100
@@ -25,18 +21,24 @@ define ['tile', 'jquery'], (Tile, $) ->
         # Config: dimensions of board and number of mines
         tilesX: 8
         tilesY: 8
-        mines: 8
+        mines: 10
 
+        # Are we cheating?
+        # P.S. Cheating turns flags over mines red!
+        cheat: false
+
+        # Cosmetic
         tileStrokeWidth: 1
 
         # The board data array
         board: []
 
         # Constructs a new board with the given dimensions and mines
-        constructor: (tilesX, tilesY, mines) ->
+        constructor: (tilesX, tilesY, mines, cheat) ->
             @tilesX = tilesX if tilesX?
             @tilesY = tilesY if tilesY?
             @mines = mines if mines?
+            @cheat = cheat if cheat?
 
             # Create the board unshuffled, with all mines at the first positions
             minesNotPlaced = @mines
@@ -53,7 +55,7 @@ define ['tile', 'jquery'], (Tile, $) ->
 
             # Shuffle the board, 2d Fisher-Yates
             for row, x in @board
-                for column, y in @board
+                for y in [0..row.length - 1]
                     # Select a random tile to swap with
                     xRand = Math.floor(Math.random() * (@tilesX - x)) + x
                     yRand = Math.floor(Math.random() * (@tilesY - y)) + y
@@ -65,7 +67,7 @@ define ['tile', 'jquery'], (Tile, $) ->
 
             # Calculate the adjacents
             for row, x in @board
-                for column, y in @board
+                for y in [0..row.length - 1]
                     # Don't need to calculate adjacents for mines
                     if !@board[x][y].mine
                         @board[x][y].adjacent = @getAdjacents(x, y)
@@ -77,8 +79,8 @@ define ['tile', 'jquery'], (Tile, $) ->
 
             # Create the SVG
             @svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-            @svg.setAttribute("width", "100%")
-            @svg.setAttribute("height", "100%")
+            @svg.setAttribute("width", "99%")
+            @svg.setAttribute("height", "99%")
             @svg.setAttribute("viewBox", "0 0 " + @viewboxX + " " + @viewboxY)
             @svg.setAttribute("preserveAspectRatio", "xMidYMid meet")
             @svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink")
@@ -115,16 +117,24 @@ define ['tile', 'jquery'], (Tile, $) ->
 
             @svg.appendChild(rect)
 
-            # Render the tiles
+            # Render the tiles while checking for a fully completed board
+            complete = true
             for x in [0..@tilesX - 1]
                 for y in [0..@tilesY - 1]
                     posX = @viewboxX / @tilesX * x
                     posY = @viewboxY / @tilesY * y
-                    @svg.appendChild(@board[x][y].render(posX, posY, (tileLegX / 2), (tileLegX / 2)))
+                    @svg.appendChild(@board[x][y].render(posX, posY, (tileLegX / 2), (tileLegY / 2), @cheat))
+
+                    # Check for complete
+                    if complete and !@board[x][y].mine and !@board[x][y].revealed
+                        complete = false
 
             # Clear the parent and insert this into the dom
             $(@selParent).html("")
             $(@selParent).append(@svg)
+
+            # Return the complete state
+            return complete
 
         # Reveal the given tile
         # If zero adjacents, reveal all adjacent zeroes as well
@@ -142,9 +152,20 @@ define ['tile', 'jquery'], (Tile, $) ->
         # Reveals the entire board (like when the game is over)
         revealAll: () ->
             for row, x in @board
-                for column, y in @board
+                for y in [0..row.length - 1]
                     if !@board[x][y].revealed
                         @board[x][y].revealed = true
+
+        # Toggle a tile as flagged/unflagged
+        flagToggle: (x, y) ->
+            # If it's not already flagged...
+            if !@board[x][y].flagged
+                # Flag it
+                @board[x][y].flagged = true
+            # If it is flagged...
+            else
+                # Unflag it
+                @board[x][y].flagged = false
 
         # Returns the number of adjacent mines for the given square
         getAdjacents: (x, y) ->

@@ -12,16 +12,72 @@ body {
     color: #333;
 }
 
-.controls {
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    height: 100px;
-    width: 100px;
-    margin-top: -50px;
+h1 {
+    margin-top: 0px;
+    font-size: 22px;
 }
-.controls img {
+
+#controls {
+    position: absolute;
+    text-align: center;
+}
+
+#container {
     height: 100%;
+    margin: 0;
     width: 100%;
+}
+
+#menu {
+    display: none;
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 65%;
+    padding: 6px;
+    overflow: hidden;
+    text-align: center;
+    background: #ffffff;
+    border: 1px #000000 solid;
+    box-shadow: 8px 8px 8px #333333;
+}
+
+    #menu-body {
+        width: 100%;
+        text-align: left;
+    }
+
+#board {
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+@media screen and (orientation:portrait) {
+    #controls {
+        top: 0;
+        left: 50%;
+        height: 20px;
+        width: 250px;
+        margin-left: -125px;
+    }
+
+    img#smiley {
+        height: 100%;
+    }
+}
+
+@media screen and (orientation:landscape) {
+    #controls {
+        top: 50%;
+        left: 0;
+        height: 200px;
+        width: 50px;
+        margin-top: -100px;
+    }
+
+    img#smiley {
+        width: 100%;
+    }
 }
 

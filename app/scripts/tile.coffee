@@ -2,10 +2,7 @@
    global define
 ###
 
-###
-    A single tile in the game
-###
-
+# A single tile in the game
 define [], () ->
     "use strict"
 
@@ -27,15 +24,23 @@ define [], () ->
             @mine = mine
             @adjacent = adjacent
 
-        render: (x, y, width, height) ->
+        render: (x, y, width, height, cheat = false) ->
             color = "black"
-            if @mine
-                color = "red"
-            else if @revealed
-                color = "blue"
+            label = ""
+            if @revealed
+                if @mine
+                    label = "M"
+                    color = "red"
+                else
+                    label = @adjacent
+                    color = "blue"
+            else if @flagged
+                label = "F"
+
+                if cheat and @mine
+                    color = "red"
 
             tile = document.createElementNS("http://www.w3.org/2000/svg", "rect")
-            #tile.setAttributeNS('http://www.w3.org/1999/xlink','href', "images/happy.svg") #'images/flag.svg')
             tile.setAttribute("fill", color)
             tile.setAttribute("x", x)
             tile.setAttribute("y", y)
@@ -44,18 +49,12 @@ define [], () ->
 
             text = document.createElementNS("http://www.w3.org/2000/svg", "text")
             text.setAttribute("x", x + 1)
-            text.setAttribute("y", y + 11)
+            text.setAttribute("y", y + height * 1.5)
             text.setAttribute("width", width)
             text.setAttribute("height", height)
             text.setAttribute("fill", color)
-            text.setAttribute("font-size", "11")
+            text.setAttribute("font-size", Math.min(height, width) + 3)
 
-            label = ""
-            if @revealed
-                if @mine
-                    label = "M"
-                else
-                    label = @adjacent
             textNode = document.createTextNode(label)
             text.appendChild(textNode)
 

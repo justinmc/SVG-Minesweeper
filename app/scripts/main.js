@@ -1,18 +1,22 @@
-require.config({
+(function() {
+  require.config({
     paths: {
-        jquery: '../bower_components/jquery/jquery',
+      jquery: '../bower_components/jquery/jquery'
     },
     shim: {
-        bootstrap: {
-            deps: ['jquery'],
-            exports: 'jquery'
-        }
+      bootstrap: {
+        deps: ['jquery'],
+        exports: 'jquery'
+      }
     }
-});
+  });
 
-require(['app', 'jquery'], function (app, $) {
+  require(['game', 'board', 'tile', 'jquery'], function(Game, Board, Tile, $) {
     'use strict';
-    // use app here
-    console.log(app);
-    console.log('Running jQuery %s', $().jquery);
-});
+    return $(function() {
+      var game;
+      return game = new Game();
+    });
+  });
+
+}).call(this);

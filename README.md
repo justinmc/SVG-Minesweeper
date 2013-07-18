@@ -1,5 +1,4 @@
 # SVG Minesweeper
 
-Minesweeper in SVG!  Uses Backbone for data.
-
+A simple remake of the game Minesweeper, but totally in SVG.  Uses Coffeescript.
 
