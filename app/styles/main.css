@@ -17,6 +17,10 @@ h1 {
     font-size: 22px;
 }
 
+svg > * {
+  cursor: pointer;
+}
+
 #controls {
     position: absolute;
     text-align: center;

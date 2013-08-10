@@ -12,6 +12,8 @@
 
       Game.prototype.modeFlag = false;
 
+      Game.prototype.optionsOpen = false;
+
       Game.prototype.selModeFlag = "#mode-flag";
 
       Game.prototype.selRestart = "#smiley";
@@ -40,23 +42,23 @@
 
       Game.prototype.isGameOver = false;
 
+      Game.prototype.clicked = false;
+
+      Game.prototype.clickTimeout = null;
+
       function Game() {
         var me;
         me = this;
         $(this.selButtonOptions).on("click", function() {
-          return $(me.selOptions).toggle();
+          me.optionsOpen = !me.optionsOpen;
+          return me.render();
         });
         $(this.selButtonCancel).on("click", function() {
-          return $(me.selOptions).hide();
+          me.optionsOpen = false;
+          return me.render();
         });
         $(this.selButtonAccept).on("click", function() {
-          var cheat, mines, x, y;
-          x = $(me.selX).val();
-          y = $(me.selY).val();
-          mines = $(me.selMines).val();
-          cheat = $(me.selCheat).is(":checked");
-          me.restart(x, y, mines, cheat);
-          return $(me.selOptions).hide();
+          return me.optionsAccept();
         });
         this.restart();
       }
@@ -64,15 +66,57 @@
       Game.prototype.render = function() {
         var complete, me;
         me = this;
+        $(this.selX).val(this.board.tilesX.toString());
+        $(this.selY).val(this.board.tilesY.toString());
+        $(this.selMines).val(this.board.mines.toString());
+        $(this.selCheat).prop("checked", this.board.cheat);
         complete = this.board.render();
+        if (this.optionsOpen) {
+          $(me.selOptions).show();
+        } else {
+          $(me.selOptions).hide();
+        }
         if (complete && !this.isGameOver) {
           this.gameWin();
         } else {
+          $(this.board.svg).off("click");
           $(this.board.svg).on("click", function(e) {
-            me.click(e.clientX, e.clientY);
-            return me.render();
+            if (me.clicked) {
+              me.clicked = false;
+              clearTimeout(me.clickTimeout);
+              me.doubleclick(e.clientX, e.clientY);
+              return me.render();
+            } else {
+              me.clicked = true;
+              me.clickTimeout = setTimeout(function() {
+                return me.clicked = false;
+              }, 300);
+              me.click(e.clientX, e.clientY);
+              return me.render();
+            }
+          });
+          $(this.board.svg).off("mousedown");
+          $(this.board.svg).on("mousedown", function(e) {
+            if (e.which === 3) {
+              me.click(e.clientX, e.clientY, true);
+              return me.render();
+            }
+          });
+          $(this.board.svg).off("contextmenu");
+          $(this.board.svg).on("contextmenu", function(e) {
+            return false;
+          });
+          $(document).off("keyup");
+          $(document).on("keyup", function(e) {
+            if (e.keyCode === 27) {
+              me.optionsOpen = false;
+              return me.render();
+            } else if (e.keyCode === 13) {
+              return me.optionsAccept();
+            }
           });
         }
+        $(this.selRestart).off("click");
         return $(this.selRestart).on("click", function(e) {
           return me.restart(me.board.tilesX, me.board.tilesY, me.board.mines, me.board.cheat);
         });
@@ -89,25 +133,65 @@
         return this.board.revealAll();
       };
 
-      Game.prototype.click = function(x, y) {
-        var gameX, gameY, realX, realY, tileX, tileY;
+      Game.prototype.click = function(x, y, flag) {
+        var pos;
+        if (flag == null) {
+          flag = false;
+        }
+        pos = this.coordsToTile(x, y);
+        if (pos.tileX >= 0 && pos.tileY >= 0) {
+          if (this.getModeFlag() || flag) {
+            return this.board.flagToggle(pos.tileX, pos.tileY);
+          } else {
+            if (this.board.isMine(pos.tileX, pos.tileY)) {
+              return this.gameOver();
+            } else {
+              return this.board.reveal(pos.tileX, pos.tileY);
+            }
+          }
+        }
+      };
+
+      Game.prototype.doubleclick = function(x, y) {
+        var pos;
+        pos = this.coordsToTile(x, y);
+        if (pos.tileX >= 0 && pos.tileY >= 0) {
+          if (this.board.isRevealed(pos.tileX, pos.tileY)) {
+            return this.board.revealAdjacent(pos.tileX, pos.tileY);
+          }
+        }
+      };
+
+      Game.prototype.optionsAccept = function() {
+        var cheat, mines, x, y;
+        x = $(this.selX).val();
+        y = $(this.selY).val();
+        mines = $(this.selMines).val();
+        cheat = $(this.selCheat).is(":checked");
+        if (x > 0 && y > 0 && mines <= x * y && (cheat != null)) {
+          if (x !== this.board.tilesX || y !== this.board.tilesY || mines !== this.board.mines || cheat !== this.board.cheat) {
+            this.restart(x, y, mines, cheat);
+          }
+        }
+        this.optionsOpen = false;
+        return this.render();
+      };
+
+      Game.prototype.coordsToTile = function(x, y) {
+        var gameX, gameY, pos, realX, realY;
+        pos = {
+          tileX: -1,
+          tileY: -1
+        };
         if (x >= this.board.svg.getBoundingClientRect().left && x <= this.board.svg.getBoundingClientRect().right && y >= 0 && y <= this.board.svg.getBoundingClientRect().bottom) {
           realX = x - this.board.svg.getBoundingClientRect().left;
           realY = y - this.board.svg.getBoundingClientRect().top;
           gameX = this.board.viewboxX * realX / this.board.svg.getBoundingClientRect().width;
           gameY = this.board.viewboxY * realY / this.board.svg.getBoundingClientRect().height;
-          tileX = Math.floor(this.board.tilesX * gameX / this.board.viewboxX);
-          tileY = Math.floor(this.board.tilesY * gameY / this.board.viewboxY);
-          if (this.getModeFlag()) {
-            return this.board.flagToggle(tileX, tileY);
-          } else {
-            if (this.board.isMine(tileX, tileY)) {
-              return this.gameOver();
-            } else {
-              return this.board.reveal(tileX, tileY);
-            }
-          }
+          pos.tileX = Math.floor(this.board.tilesX * gameX / this.board.viewboxX);
+          pos.tileY = Math.floor(this.board.tilesY * gameY / this.board.viewboxY);
         }
+        return pos;
       };
 
       Game.prototype.getModeFlag = function() {

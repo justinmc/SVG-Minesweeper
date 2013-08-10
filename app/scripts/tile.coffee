@@ -20,20 +20,33 @@ define [], () ->
         # Is this tile already clicked and revealed?
         revealed: false
 
+        # Cosmetic
+        colorFlag: "#ffa000"
+        colorMine: "#ffff00"
+        color0: "#949494"
+        color1: "#0000ff"
+        color2: "#00a000"
+        color3: "#ff0000"
+        color4: "#00007f"
+        color5: "#a00000"
+        color6: "#00ffff"
+        color7: "#000000"
+        color8: "#000000"
+
         constructor: (mine, adjacent) ->
             @mine = mine
             @adjacent = adjacent
 
         render: (x, y, width, height, cheat = false) ->
-            color = "black"
+            color = @colorFlag
             label = ""
             if @revealed
                 if @mine
                     label = "M"
-                    color = "red"
+                    color = @colorMine
                 else
                     label = @adjacent
-                    color = "blue"
+                    color = @getColorNumber()
             else if @flagged
                 label = "F"
 
@@ -59,4 +72,25 @@ define [], () ->
             text.appendChild(textNode)
 
             return text
+
+        # Returns the number color based on the adjacent number
+        getColorNumber: () ->
+            if @adjacent < 1
+                return @color0
+            else if @adjacent == 1
+                return @color1
+            else if @adjacent == 2
+                return @color2
+            else if @adjacent == 3
+                return @color3
+            else if @adjacent == 4
+                return @color4
+            else if @adjacent == 5
+                return @color5
+            else if @adjacent == 6
+                return @color6
+            else if @adjacent == 7
+                return @color7
+            else
+                return @color8
 

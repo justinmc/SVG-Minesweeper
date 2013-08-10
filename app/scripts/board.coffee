@@ -29,6 +29,8 @@ define ['tile', 'jquery'], (Tile, $) ->
 
         # Cosmetic
         tileStrokeWidth: 1
+        boardColor: "#afafaf"
+        lineColor: "#000000"
 
         # The board data array
         board: []
@@ -94,8 +96,8 @@ define ['tile', 'jquery'], (Tile, $) ->
             pattern.setAttribute("patternUnits", "userSpaceOnUse")
             patternRect = document.createElementNS("http://www.w3.org/2000/svg", "rect")
             patternRect.setAttribute("class", "clickable")
-            patternRect.setAttribute("fill", "#afafaf")
-            patternRect.setAttribute("stroke", "black")
+            patternRect.setAttribute("fill", @boardColor)
+            patternRect.setAttribute("stroke", @lineColor)
             patternRect.setAttribute("stroke-width", @tileStrokeWidth)
             patternRect.setAttribute("x", "0")
             patternRect.setAttribute("y", "0")
@@ -156,6 +158,20 @@ define ['tile', 'jquery'], (Tile, $) ->
                     if !@board[x][y].revealed
                         @board[x][y].revealed = true
 
+        # If tile is "satisfied" by flags, reveals unrevealed and unflagged adjacent tiles
+        revealAdjacent: (x, y) ->
+            coords = @getAdjacentCoords(x, y)
+
+            # Check if the tile is satisfied
+            adjacent = @board[x][y].adjacent
+            for coord in coords
+                adjacent-- if @board[coord.x][coord.y].flagged
+
+            # If it's satisfied, reveal adjacent tiles
+            if adjacent == 0
+                for coord in coords
+                    @reveal(coord.x, coord.y) if !@board[coord.x][coord.y].revealed and !@board[coord.x][coord.y].flagged
+
         # Toggle a tile as flagged/unflagged
         flagToggle: (x, y) ->
             # If it's not already flagged...
@@ -215,5 +231,15 @@ define ['tile', 'jquery'], (Tile, $) ->
                 return false
 
             if @board[x][y].mine
+                return true
+
+        # Returns true if the specified tile has been revealed, false otherwisea
+        # Out-of-bounds indices ok, returns false
+        isRevealed: (x, y) ->
+            # Check for out of bounds
+            if !@isValidPos(x, y)
+                return false
+
+            if @board[x][y].revealed
                 return true
 

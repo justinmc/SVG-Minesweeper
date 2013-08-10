@@ -26,6 +26,10 @@
 
       Board.prototype.tileStrokeWidth = 1;
 
+      Board.prototype.boardColor = "#afafaf";
+
+      Board.prototype.lineColor = "#000000";
+
       Board.prototype.board = [];
 
       function Board(tilesX, tilesY, mines, cheat) {
@@ -96,8 +100,8 @@
         pattern.setAttribute("patternUnits", "userSpaceOnUse");
         patternRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         patternRect.setAttribute("class", "clickable");
-        patternRect.setAttribute("fill", "#afafaf");
-        patternRect.setAttribute("stroke", "black");
+        patternRect.setAttribute("fill", this.boardColor);
+        patternRect.setAttribute("stroke", this.lineColor);
         patternRect.setAttribute("stroke-width", this.tileStrokeWidth);
         patternRect.setAttribute("x", "0");
         patternRect.setAttribute("y", "0");
@@ -167,6 +171,30 @@
           }).call(this));
         }
         return _results;
+      };
+
+      Board.prototype.revealAdjacent = function(x, y) {
+        var adjacent, coord, coords, _i, _j, _len, _len1, _results;
+        coords = this.getAdjacentCoords(x, y);
+        adjacent = this.board[x][y].adjacent;
+        for (_i = 0, _len = coords.length; _i < _len; _i++) {
+          coord = coords[_i];
+          if (this.board[coord.x][coord.y].flagged) {
+            adjacent--;
+          }
+        }
+        if (adjacent === 0) {
+          _results = [];
+          for (_j = 0, _len1 = coords.length; _j < _len1; _j++) {
+            coord = coords[_j];
+            if (!this.board[coord.x][coord.y].revealed && !this.board[coord.x][coord.y].flagged) {
+              _results.push(this.reveal(coord.x, coord.y));
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        }
       };
 
       Board.prototype.flagToggle = function(x, y) {
@@ -257,6 +285,15 @@
           return false;
         }
         if (this.board[x][y].mine) {
+          return true;
+        }
+      };
+
+      Board.prototype.isRevealed = function(x, y) {
+        if (!this.isValidPos(x, y)) {
+          return false;
+        }
+        if (this.board[x][y].revealed) {
           return true;
         }
       };
