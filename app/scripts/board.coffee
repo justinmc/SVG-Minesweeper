@@ -174,14 +174,16 @@ define ['tile', 'jquery'], (Tile, $) ->
 
         # Toggle a tile as flagged/unflagged
         flagToggle: (x, y) ->
-            # If it's not already flagged...
-            if !@board[x][y].flagged
-                # Flag it
-                @board[x][y].flagged = true
-            # If it is flagged...
-            else
-                # Unflag it
-                @board[x][y].flagged = false
+            # Only works on non-revealed tiles
+            if !@board[x][y].revealed
+                # If it's not already flagged...
+                if !@board[x][y].flagged
+                    # Flag it
+                    @board[x][y].flagged = true
+                # If it is flagged...
+                else
+                    # Unflag it
+                    @board[x][y].flagged = false
 
         # Returns the number of adjacent mines for the given square
         getAdjacents: (x, y) ->

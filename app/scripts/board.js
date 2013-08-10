@@ -198,10 +198,12 @@
       };
 
       Board.prototype.flagToggle = function(x, y) {
-        if (!this.board[x][y].flagged) {
-          return this.board[x][y].flagged = true;
-        } else {
-          return this.board[x][y].flagged = false;
+        if (!this.board[x][y].revealed) {
+          if (!this.board[x][y].flagged) {
+            return this.board[x][y].flagged = true;
+          } else {
+            return this.board[x][y].flagged = false;
+          }
         }
       };
 
