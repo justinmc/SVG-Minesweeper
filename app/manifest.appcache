@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# v1 2013-08-11
+index.html
+404.html
+favicon.ico
+images/happy.svg
+images/worried.svg
+images/sad.svg
+scripts/main.js
+styles/main.css
+
+# Use from network if available
+#NETWORK:
+#network.html
+
+# Fallback content
+#FALLBACK:
+#/ fallback.html
+

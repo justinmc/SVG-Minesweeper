@@ -268,6 +268,25 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        // create an appcache manifest file
+        /*manifest: {
+          generate: {
+            options: {
+              basePath: "../",
+              network: ["http://*", "https://*"],
+              fallback: [""],
+              exclude: [""],
+              preferOnline: true,
+              timestamp: true
+            },
+            src: [
+                "*.html",
+                "scripts/*.min.js",
+                "css/*.css"
+            ],
+            dest: "manifest.appcache"
+          }
+        },*/
         // Put files not handled in other tasks here
         copy: {
             dist: {
@@ -279,6 +298,7 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
+                        '*.appcache',
                         'images/{,*/}*.{webp,gif,svg}',
                         'styles/fonts/*'
                     ]
