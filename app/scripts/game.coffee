@@ -213,15 +213,16 @@ define ['board', 'jquery'], (Board, $) ->
         coordsToTile: (x, y) ->
             pos = {tileX: -1, tileY: -1}
 
-             # Only care about clicks within the board
-            if x >= @board.svg.getBoundingClientRect().left and x <= @board.svg.getBoundingClientRect().right and y >= 0 and y <= @board.svg.getBoundingClientRect().bottom
+            # Only care about clicks within the board
+            rect = $(@board.svg).children("rect").get(0).getBoundingClientRect()
+            if x >= rect.left and x <= rect.right and y >= 0 and y <= rect.bottom
                 # Calculate coords in real pixels within the board
-                realX = x - @board.svg.getBoundingClientRect().left
-                realY = y - @board.svg.getBoundingClientRect().top
+                realX = x - rect.left
+                realY = y - rect.top
 
                 # Calculate coords in viewbox coordinate system
-                gameX = @board.viewboxX * realX / @board.svg.getBoundingClientRect().width
-                gameY = @board.viewboxY * realY / @board.svg.getBoundingClientRect().height
+                gameX = @board.viewboxX * realX / rect.width
+                gameY = @board.viewboxY * realY / rect.height
 
                 # Calculate the clicked row and column
                 pos.tileX = Math.floor @board.tilesX * gameX / @board.viewboxX

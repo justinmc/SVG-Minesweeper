@@ -109,9 +109,9 @@ define ['tile', 'jquery'], (Tile, $) ->
 
             # Create the background
             rect = document.createElementNS("http://www.w3.org/2000/svg", "rect")
-            rect.setAttribute("fill","url(#grid)")
-            rect.setAttribute("stroke","black")
-            rect.setAttribute("stroke-width","1")
+            rect.setAttribute("fill", "url(#grid)")
+            rect.setAttribute("stroke", "black")
+            rect.setAttribute("stroke-width", "1")
             rect.setAttribute("x", "0")
             rect.setAttribute("y", "0")
             rect.setAttribute("width", @viewboxX)

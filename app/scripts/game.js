@@ -178,16 +178,17 @@
       };
 
       Game.prototype.coordsToTile = function(x, y) {
-        var gameX, gameY, pos, realX, realY;
+        var gameX, gameY, pos, realX, realY, rect;
         pos = {
           tileX: -1,
           tileY: -1
         };
-        if (x >= this.board.svg.getBoundingClientRect().left && x <= this.board.svg.getBoundingClientRect().right && y >= 0 && y <= this.board.svg.getBoundingClientRect().bottom) {
-          realX = x - this.board.svg.getBoundingClientRect().left;
-          realY = y - this.board.svg.getBoundingClientRect().top;
-          gameX = this.board.viewboxX * realX / this.board.svg.getBoundingClientRect().width;
-          gameY = this.board.viewboxY * realY / this.board.svg.getBoundingClientRect().height;
+        rect = $(this.board.svg).children("rect").get(0).getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= 0 && y <= rect.bottom) {
+          realX = x - rect.left;
+          realY = y - rect.top;
+          gameX = this.board.viewboxX * realX / rect.width;
+          gameY = this.board.viewboxY * realY / rect.height;
           pos.tileX = Math.floor(this.board.tilesX * gameX / this.board.viewboxX);
           pos.tileY = Math.floor(this.board.tilesY * gameY / this.board.viewboxY);
         }
