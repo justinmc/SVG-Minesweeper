@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" manifest="manifest.appcache"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -19,68 +19,69 @@
 
         <div id="container">
             <div id="controls">
-                <a href="#">
-                    <img id="smiley" src="images/worried.svg" />
+                <img id="smiley" src="images/worried.svg" />
+                <a href="#" id="mode-flag" class="button toggle">
+                    Flag
                 </a>
-                Reveal
-                <input id="mode-reveal" type="radio" name="controls" value="reveal" checked="checked" />
-                Flag
-                <input id="mode-flag" type="radio" name="controls" value="flag" />
-                <a href="#" id="button-options">Options</a>
+                <a href="#" id="button-options" class="button">
+                    Options
+                </a>
             </div>
             <div id="menu">
-                <h1>SVG Minesweeper!</h1>
-                Check out the code over at <a href="http://www.github.com/justinmc/SVG-Minesweeper" target="_blank">Github</a>
-                <br /><br />
-                <div id="menu-body">
-                    Number of rows
-                    <select id="select-rows">
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                        <option value="14">14</option>
-                        <option value="15">15</option>
-                        <option value="16">16</option>
-                    </select>
+                <div id="menu-content">
+                    <h1>SVG Minesweeper!</h1>
+                    Check out the code over at <a href="http://www.github.com/justinmc/SVG-Minesweeper" target="_blank">Github</a>
+                    <br /><br />
+                    <div id="menu-content-body">
+                        Number of rows
+                        <select id="select-rows">
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                        </select>
+                        <br />
+                        Number of columns
+                        <select id="select-columns">
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                        </select>
+                        <br />
+                        Number of mines
+                        <select id="select-mines">
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                        </select>
+                        <br />
+                        Cheat?
+                        <input type="checkbox" id="cheat" />
+                    </div>
                     <br />
-                    Number of columns
-                    <select id="select-columns">
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                        <option value="14">14</option>
-                        <option value="15">15</option>
-                        <option value="16">16</option>
-                    </select>
-                    <br />
-                    Number of mines
-                    <select id="select-mines">
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                        <option value="13">13</option>
-                        <option value="14">14</option>
-                        <option value="15">15</option>
-                        <option value="16">16</option>
-                        <option value="17">17</option>
-                        <option value="18">18</option>
-                        <option value="19">19</option>
-                        <option value="20">20</option>
-                    </select>
-                    <br />
-                    Cheat?
-                    <input type="checkbox" id="cheat" />
+                    <a href="#" id="button-accept">Accept and restart</a>
+                    |
+                    <a href="#" id="button-cancel">Cancel</a>
                 </div>
-                <br />
-                <a href="#" id="button-accept">Accept and restart</a>
-                |
-                <a href="#" id="button-cancel">Cancel</a>
             </div>
             <div id="board">
                 <!-- Main game SVG goes here -->

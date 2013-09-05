@@ -49,8 +49,8 @@
       function Game() {
         var me;
         me = this;
-        $(this.selButtonOptions).on("click", function() {
-          me.optionsOpen = !me.optionsOpen;
+        $(this.selButtonOptions).on("click", function(e) {
+          me.optionsOpen = true;
           return me.render();
         });
         $(this.selButtonCancel).on("click", function() {
@@ -60,12 +60,27 @@
         $(this.selButtonAccept).on("click", function() {
           return me.optionsAccept();
         });
+        $(this.selOptions).on("click", function(e) {
+          if (e.target === $(me.selOptions).get(0)) {
+            me.optionsOpen = false;
+            return me.render();
+          }
+        });
+        $(this.selModeFlag).on("click", function() {
+          me.modeFlag = !me.modeFlag;
+          return me.render();
+        });
         this.restart();
       }
 
       Game.prototype.render = function() {
         var complete, me;
         me = this;
+        if (this.modeFlag) {
+          $(this.selModeFlag).addClass("selected");
+        } else {
+          $(this.selModeFlag).removeClass("selected");
+        }
         $(this.selX).val(this.board.tilesX.toString());
         $(this.selY).val(this.board.tilesY.toString());
         $(this.selMines).val(this.board.mines.toString());
@@ -79,7 +94,7 @@
         if (complete && !this.isGameOver) {
           this.gameWin();
         } else {
-          $(this.board.svg).off("click");
+          $(this.board.svgTg).off("click");
           $(this.board.svg).on("click", function(e) {
             if (me.clicked) {
               me.clicked = false;
@@ -109,7 +124,7 @@
           $(document).off("keyup");
           $(document).on("keyup", function(e) {
             if (e.keyCode === 27) {
-              me.optionsOpen = false;
+              me.optionsOpen = !me.optionsOpen;
               return me.render();
             } else if (e.keyCode === 13) {
               return me.optionsAccept();
@@ -140,7 +155,7 @@
         }
         pos = this.coordsToTile(x, y);
         if (pos.tileX >= 0 && pos.tileY >= 0) {
-          if (this.getModeFlag() || flag) {
+          if (this.modeFlag || flag) {
             return this.board.flagToggle(pos.tileX, pos.tileY);
           } else {
             if (this.board.isMine(pos.tileX, pos.tileY)) {
@@ -193,15 +208,6 @@
           pos.tileY = Math.floor(this.board.tilesY * gameY / this.board.viewboxY);
         }
         return pos;
-      };
-
-      Game.prototype.getModeFlag = function() {
-        if ($(this.selModeFlag).is(":checked")) {
-          this.modeFlag = true;
-        } else {
-          this.modeFlag = false;
-        }
-        return this.modeFlag;
       };
 
       Game.prototype.restart = function(x, y, mines, cheat) {

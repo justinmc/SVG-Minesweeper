@@ -49,8 +49,8 @@ define ['board', 'jquery'], (Board, $) ->
         constructor: () ->
             # Set the events on the options controls
             me = @
-            $(@selButtonOptions).on "click", () ->
-                me.optionsOpen = !me.optionsOpen
+            $(@selButtonOptions).on "click", (e) ->
+                me.optionsOpen = true
                 me.render()
 
             $(@selButtonCancel).on "click", () ->
@@ -60,11 +60,27 @@ define ['board', 'jquery'], (Board, $) ->
             $(@selButtonAccept).on "click", () ->
                 me.optionsAccept()
 
+            $(@selOptions).on "click", (e) ->
+                if e.target == $(me.selOptions).get(0)
+                    me.optionsOpen = false
+                    me.render()
+
+            # Set the events for reveal and flag
+            $(@selModeFlag).on "click", () ->
+                me.modeFlag = !me.modeFlag
+                me.render()
+
             # Start the game!
             @restart()
 
         render: () ->
             me = @
+
+            # Set the reveal/flag buttons
+            if @modeFlag
+                $(@selModeFlag).addClass("selected")
+            else
+                $(@selModeFlag).removeClass("selected")
 
             # Set the options controls to the values in data
             $(@selX).val(@board.tilesX.toString())
@@ -87,7 +103,7 @@ define ['board', 'jquery'], (Board, $) ->
             # Otherwise set the events that allow interaction
             else
                # Set the click/doubleclick event on the board
-                $(@board.svg).off "click"
+                $(@board.svgTg).off "click"
                 $(@board.svg).on "click", (e) ->
                     # If doubleclicked
                     if me.clicked
@@ -130,8 +146,8 @@ define ['board', 'jquery'], (Board, $) ->
                 $(document).on "keyup", (e) ->
                     # Escape key
                     if e.keyCode == 27
-                        # Close the options menu
-                        me.optionsOpen = false
+                        # Toggle the options menu
+                        me.optionsOpen = !me.optionsOpen
                         me.render()
                     # Enter key
                     else if e.keyCode == 13
@@ -169,7 +185,7 @@ define ['board', 'jquery'], (Board, $) ->
             # Only care if a tile on the board was clicked
             if pos.tileX >= 0 and pos.tileY >= 0
                 # If flagging
-                if @getModeFlag() or flag
+                if @modeFlag or flag
                     @board.flagToggle(pos.tileX, pos.tileY)
                 # Otherwise in reveal mode
                 else
@@ -187,10 +203,10 @@ define ['board', 'jquery'], (Board, $) ->
 
             # Only care if a tile on the board was clicked
             if pos.tileX >= 0 and pos.tileY >= 0
-                # If the tile was revealed, then reveal it's adjacent tiles (if satisfied) 
+                # If the tile was revealed, then reveal it's adjacent tiles (if satisfied)
                 if @board.isRevealed(pos.tileX, pos.tileY)
                     @board.revealAdjacent(pos.tileX, pos.tileY)
- 
+
         # Handles the option menu being submitted
         optionsAccept: () ->
             # Get the selections
@@ -227,17 +243,8 @@ define ['board', 'jquery'], (Board, $) ->
                 # Calculate the clicked row and column
                 pos.tileX = Math.floor @board.tilesX * gameX / @board.viewboxX
                 pos.tileY = Math.floor @board.tilesY * gameY / @board.viewboxY
-           
+
             return pos
-
-        # Checks the radio button for the current mode, sets it, and returns it
-        getModeFlag: () ->
-            if $(@selModeFlag).is(":checked")
-                @modeFlag = true
-            else
-                @modeFlag = false
-
-            return @modeFlag
 
         # Restarts the game
         restart: (x = null, y = null, mines = null, cheat = null) ->
