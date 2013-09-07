@@ -40,7 +40,7 @@
 
       Game.prototype.srcFaceSad = "images/sad.svg";
 
-      Game.prototype.isGameOver = false;
+      Game.prototype.isGameOver = 0;
 
       Game.prototype.clicked = false;
 
@@ -85,13 +85,13 @@
         $(this.selY).val(this.board.tilesY.toString());
         $(this.selMines).val(this.board.mines.toString());
         $(this.selCheat).prop("checked", this.board.cheat);
-        complete = this.board.render();
+        complete = this.board.render(this.isGameOver);
         if (this.optionsOpen) {
           $(me.selOptions).show();
         } else {
           $(me.selOptions).hide();
         }
-        if (complete && !this.isGameOver) {
+        if (complete && this.isGameOver >= 0) {
           this.gameWin();
         } else {
           $(this.board.svgTg).off("click");
@@ -138,12 +138,13 @@
       };
 
       Game.prototype.gameOver = function() {
-        this.isGameOver = true;
+        this.isGameOver = -1;
         $(this.selRestart).attr("src", this.srcFaceSad);
         return this.board.revealAll();
       };
 
       Game.prototype.gameWin = function() {
+        this.isGameOver = 1;
         $(this.selRestart).attr("src", this.srcFaceHappy);
         return this.board.revealAll();
       };
@@ -224,7 +225,7 @@
           cheat = null;
         }
         $(this.selRestart).attr("src", this.srcFaceWorried);
-        this.isGameOver = false;
+        this.isGameOver = 0;
         this.board = new Board(x, y, mines, cheat);
         return this.render();
       };

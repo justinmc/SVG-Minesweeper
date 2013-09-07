@@ -29,58 +29,95 @@
             </div>
             <div id="menu">
                 <div id="menu-content">
-                    <h1>SVG Minesweeper!</h1>
+                    <h1>Super Responsive Minesweeper!</h1>
                     Check out the code over at <a href="http://www.github.com/justinmc/SVG-Minesweeper" target="_blank">Github</a>
                     <br /><br />
-                    <div id="menu-content-body">
-                        Number of rows
-                        <select id="select-rows">
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                        </select>
-                        <br />
-                        Number of columns
-                        <select id="select-columns">
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                        </select>
-                        <br />
-                        Number of mines
-                        <select id="select-mines">
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                        </select>
-                        <br />
-                        Cheat?
-                        <input type="checkbox" id="cheat" />
+                    <div class="menu-content-body">
+                        <h2>Instructions</h2>
+                        <table id="menu-content-body-instructions">
+                            <tr>
+                                <td>Start a new game</td>
+                                <td>Click the face!</td>
+                            </tr>
+                            <tr>
+                                <td>Place a flag</td>
+                                <td>Click the Flag button, then click a tile<br />Or, right click a tile</td>
+                            </tr>
+                            <tr>
+                                <td>Reveal a tile</td>
+                                <td>Click a tile (when the flag button is off!)</td>
+                            </tr>
+                            <tr>
+                                <td>Reveal tiles around a satisfied tile</td>
+                                <td>Double click the satisfied tile</td>
+                            </tr>
+                        </table>
+                        <br /><br />
                     </div>
-                    <br />
+                    <div class="menu-content-body">
+                        <h2>Settings</h2>
+                        <table id="menu-content-body-settings">
+                            <tr>
+                                <td>Number of rows</td>
+                                <td>
+                                    <select id="select-rows">
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Number of columns</td>
+                                <td>
+                                    <select id="select-columns">
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Number of mines</td>
+                                <td>
+                                    <select id="select-mines">
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Cheat?</td>
+                                <td><input type="checkbox" id="cheat" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <br clear="all" />
                     <a href="#" id="button-accept">Accept and restart</a>
                     |
                     <a href="#" id="button-cancel">Cancel</a>
+                    <br /><br />
                 </div>
             </div>
             <div id="board">

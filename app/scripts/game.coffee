@@ -39,8 +39,8 @@ define ['board', 'jquery'], (Board, $) ->
         srcFaceWorried: "images/worried.svg"
         srcFaceSad: "images/sad.svg"
 
-        # Game Over
-        isGameOver: false
+        # Game Over (0 = no, -1 = lost, 1 = win)
+        isGameOver: 0
 
         # Doubleclick timer
         clicked: false
@@ -89,7 +89,7 @@ define ['board', 'jquery'], (Board, $) ->
             $(@selCheat).prop("checked", @board.cheat)
 
             # Render the board and receive the complete state
-            complete = @board.render()
+            complete = @board.render(@isGameOver)
 
             # Show the options menu if needed
             if @optionsOpen
@@ -98,11 +98,11 @@ define ['board', 'jquery'], (Board, $) ->
                 $(me.selOptions).hide()
 
             # If the game has been won, go to victory mode
-            if complete and !@isGameOver
+            if complete and @isGameOver >= 0
                 @gameWin()
             # Otherwise set the events that allow interaction
             else
-               # Set the click/doubleclick event on the board
+                # Set the click/doubleclick event on the board
                 $(@board.svgTg).off "click"
                 $(@board.svg).on "click", (e) ->
                     # If doubleclicked
@@ -161,7 +161,7 @@ define ['board', 'jquery'], (Board, $) ->
 
         # End the game in failure
         gameOver: () ->
-            @isGameOver = true
+            @isGameOver = -1
 
             # Change the restart face to sad
             $(@selRestart).attr("src", @srcFaceSad)
@@ -171,6 +171,8 @@ define ['board', 'jquery'], (Board, $) ->
 
         # End the game in victory!
         gameWin: () ->
+            @isGameOver = 1
+
             # Change the restart face to happy
             $(@selRestart).attr("src", @srcFaceHappy)
 
@@ -249,7 +251,7 @@ define ['board', 'jquery'], (Board, $) ->
         # Restarts the game
         restart: (x = null, y = null, mines = null, cheat = null) ->
             $(@selRestart).attr("src", @srcFaceWorried)
-            @isGameOver = false
+            @isGameOver = 0
             @board = new Board(x, y, mines, cheat)
             @render()
 

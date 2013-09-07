@@ -23,6 +23,14 @@ define ['tile', 'jquery'], (Tile, $) ->
         tilesY: 8
         mines: 10
 
+        # Config: win/lose style
+        textWin: "YOU WIN!"
+        textLose: "YOU LOSE"
+        colorWin: "#000000"
+        colorLose: "#ffffff"
+        bgWin: "#ffffff"
+        bgLose: "#000000"
+
         # Are we cheating?
         # P.S. Cheating turns flags over mines red!
         cheat: false
@@ -74,7 +82,7 @@ define ['tile', 'jquery'], (Tile, $) ->
                     if !@board[x][y].mine
                         @board[x][y].adjacent = @getAdjacents(x, y)
 
-        render: () ->
+        render: (won = 0) ->
             # Calculate the dimensions of the tiles
             tileLegX = @viewboxX / @tilesX
             tileLegY = @viewboxY / @tilesY
@@ -131,6 +139,41 @@ define ['tile', 'jquery'], (Tile, $) ->
                     if complete and !@board[x][y].mine and !@board[x][y].revealed
                         complete = false
 
+            # Create the win text if needed
+            if complete
+                # Set the text and colors based on win/lose
+                bgColor = @bgWin
+                textColor = @colorWin
+                endText = @textWin
+                xPos = 4
+                if won < 0
+                    bgColor = @bgLose
+                    textColor = @colorLose
+                    endText = @textLose
+                    xPos = 1
+
+                # Create the alpha background
+                rect = document.createElementNS("http://www.w3.org/2000/svg", "rect")
+                rect.setAttribute("fill", bgColor)
+                rect.setAttribute("fill-opacity", 0.7)
+                rect.setAttribute("x", "-1")
+                rect.setAttribute("y", "-1")
+                rect.setAttribute("width", @viewboxX + 2)
+                rect.setAttribute("height", @viewboxY + 2)
+
+                # Create the actual text
+                text = document.createElementNS("http://www.w3.org/2000/svg", "text")
+                text.setAttribute("x", xPos)
+                text.setAttribute("y", 58)
+                text.setAttribute("fill", textColor)
+                text.setAttribute("font-size", 19)
+                textNode = document.createTextNode(endText)
+                text.appendChild(textNode)
+
+                # Append them to the svg
+                @svg.appendChild(rect)
+                @svg.appendChild(text)
+
             # Clear the parent and insert this into the dom
             $(@selParent).html("")
             $(@selParent).append(@svg)
@@ -171,6 +214,10 @@ define ['tile', 'jquery'], (Tile, $) ->
             if adjacent == 0
                 for coord in coords
                     @reveal(coord.x, coord.y) if !@board[coord.x][coord.y].revealed and !@board[coord.x][coord.y].flagged
+
+        # Set the board to win mode
+        gameWin: () ->
+
 
         # Toggle a tile as flagged/unflagged
         flagToggle: (x, y) ->

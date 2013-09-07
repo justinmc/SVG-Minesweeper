@@ -22,6 +22,18 @@
 
       Board.prototype.mines = 10;
 
+      Board.prototype.textWin = "YOU WIN!";
+
+      Board.prototype.textLose = "YOU LOSE";
+
+      Board.prototype.colorWin = "#000000";
+
+      Board.prototype.colorLose = "#ffffff";
+
+      Board.prototype.bgWin = "#ffffff";
+
+      Board.prototype.bgLose = "#000000";
+
       Board.prototype.cheat = false;
 
       Board.prototype.tileStrokeWidth = 1;
@@ -82,8 +94,11 @@
         }
       }
 
-      Board.prototype.render = function() {
-        var complete, defs, pattern, patternRect, posX, posY, rect, tileLegX, tileLegY, x, y, _i, _j, _ref, _ref1;
+      Board.prototype.render = function(won) {
+        var bgColor, complete, defs, endText, pattern, patternRect, posX, posY, rect, text, textColor, textNode, tileLegX, tileLegY, x, xPos, y, _i, _j, _ref, _ref1;
+        if (won == null) {
+          won = 0;
+        }
         tileLegX = this.viewboxX / this.tilesX;
         tileLegY = this.viewboxY / this.tilesY;
         this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -129,6 +144,34 @@
               complete = false;
             }
           }
+        }
+        if (complete) {
+          bgColor = this.bgWin;
+          textColor = this.colorWin;
+          endText = this.textWin;
+          xPos = 4;
+          if (won < 0) {
+            bgColor = this.bgLose;
+            textColor = this.colorLose;
+            endText = this.textLose;
+            xPos = 1;
+          }
+          rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          rect.setAttribute("fill", bgColor);
+          rect.setAttribute("fill-opacity", 0.7);
+          rect.setAttribute("x", "-1");
+          rect.setAttribute("y", "-1");
+          rect.setAttribute("width", this.viewboxX + 2);
+          rect.setAttribute("height", this.viewboxY + 2);
+          text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", xPos);
+          text.setAttribute("y", 58);
+          text.setAttribute("fill", textColor);
+          text.setAttribute("font-size", 19);
+          textNode = document.createTextNode(endText);
+          text.appendChild(textNode);
+          this.svg.appendChild(rect);
+          this.svg.appendChild(text);
         }
         $(this.selParent).html("");
         $(this.selParent).append(this.svg);
@@ -196,6 +239,8 @@
           return _results;
         }
       };
+
+      Board.prototype.gameWin = function() {};
 
       Board.prototype.flagToggle = function(x, y) {
         if (!this.board[x][y].revealed) {
