@@ -1,6 +1,8 @@
 {
+  "manifest_version": 2,
   "name": "Super Responsive Minesweeper",
   "description": "The classic game of minesweeper, built to be responsive with SVG",
+  "version": "1.1",
   "launch_path": "/demos/minesweeper/index.html",
   "icons": {
     "128": "/demos/minesweeper/images/icon-128.png",
@@ -9,6 +11,5 @@
   "developer": {
     "name": "Justin McCandless",
     "url": "http://www.justinmccandless.com"
-  },
-  "default_locale": "en"
+  }
 }

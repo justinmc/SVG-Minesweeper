@@ -310,6 +310,9 @@ module.exports = function (grunt) {
                     src: [
                         'generated/*'
                     ]
+                }, {
+                    src: '<%= yeoman.app >/manifest.webapp',
+                    dest: '<%= yeoman.dist %>/manifest.json'
                 }]
             }
         },
