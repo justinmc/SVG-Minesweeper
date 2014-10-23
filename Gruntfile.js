@@ -300,6 +300,7 @@ module.exports = function (grunt) {
                         '.htaccess',
                         '*.appcache',
                         '*.webapp',
+                        'chromeapp.js',
                         'images/{,*/}*.{webp,gif,svg,png}',
                         'styles/fonts/*'
                     ]

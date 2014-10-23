@@ -3,14 +3,19 @@
   "name": "Super Responsive Minesweeper",
   "short_name": "SVG Minesweeper",
   "description": "The classic game of minesweeper, built to be responsive with SVG",
-  "version": "1.2",
+  "version": "1.21",
   "launch_path": "/index.html",
   "icons": {
     "128": "/images/icon-128.png",
     "60": "/images/icon-60.png"
   },
-  "developer": {
+  "author": {
     "name": "Justin McCandless",
     "url": "http://www.justinmccandless.com"
+  },
+  "app": {
+    "background": {
+      "scripts": ["chromeapp.js"]
+    }
   }
 }
